@@ -1,41 +1,76 @@
-ArrayList<Bullet> bullets = new ArrayList<Bullet>();
-public void setup(){
+Spaceship spaceship;
+void setup(){
+  spaceship = new Spaceship(200,200,0,2);
   size(400,400);
-  bullets.add(new Bullet(200,200,PI/4,4));
 }
-public void draw(){
+void draw(){
   background(0,0,0);
   stroke(255,255,255);
-  for(int i = 0; i < bullets.size();){
-    bullets.get(i).Move();
-    bullets.get(i).Show();
-    bullets.get(i).Offscreen();
-    if(!bullets.get(i).active){
-      bullets.remove(i);
-    } else {
-      i++;
-    }
+  spaceship.MoveBullets();
+}
+void keyPressed(){
+  if(key == ' '){
+    spaceship.Shoot();
+  }
+  if(key == 'w'){
+    spaceship.Boost();
   }
 }
 class Floater{
-  float x,y,angle,speed;
-  Floater(float posX, float posY, float a, float s){
+  private float x,y,facingAngle,speedAngle,speed;
+  public Floater(float posX, float posY, float fA,float s){
     x = posX;
     y = posY;
-    angle = a;
+    facingAngle = fA;
+    speedAngle = fA;
     speed = s;
   }
-  void Move(){
-    x += speed * Math.cos(angle);
-    y -= speed * Math.sin(angle);
+  public void Move(){
+    x += speed * Math.cos(speedAngle);
+    y -= speed * Math.sin(speedAngle);
   }
-  void Turn(float a){
-    angle += a;
+  public void Turn(float a){
+    facingAngle += a;
+  }
+  public float getX(){
+    return x;
+  }
+  public float getY(){
+    return y;
+  }
+  public float getFacingAngle(){
+    return facingAngle;
   }
 }
 class Spaceship extends Floater{
+  private ArrayList<Bullet> bullets;
   Spaceship(float x, float y, float a, float s){
     super(x,y,a,s);
+    bullets = new ArrayList<Bullet>();
+  }
+  public void MoveBullets(){
+    for(int i = 0; i < bullets.size();){
+      bullets.get(i).Move();
+      bullets.get(i).Show();
+      bullets.get(i).Offscreen();
+      if(!bullets.get(i).active){
+        bullets.remove(i);
+      } else {
+        i++;
+      }
+    }
+  }
+  public void Shoot(){
+    bullets.add(new Bullet(this.getX(),this.getY(),this.getFacingAngle(),4));
+  }
+  public void Show(){
+  
+  }
+  public void Move(){
+    
+  }
+  public void Boost(){
+    
   }
 }
 class Bullet extends Floater{
@@ -45,12 +80,12 @@ class Bullet extends Floater{
     active = true;
   }
   void Show(){
-    float a = 10*(float)Math.cos(angle);
-    float b = 10*(float)Math.sin(angle);
-    line(x,y,x-a,y + b);
+    float a = 10*(float)Math.cos(this.getFacingAngle());
+    float b = 10*(float)Math.sin(this.getFacingAngle());
+    line(this.getX(),this.getY(),this.getX()-a,this.getY() + b);
   }
   void Offscreen(){
-    if((x > 400 || x < 0) || (y > 400 || y < 0)){
+    if((this.getX() > 400 || this.getX() < 0) || (this.getY() > 400 || this.getY() < 0)){
       active = false;
     }
   }
