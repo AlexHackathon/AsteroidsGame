@@ -8,7 +8,7 @@ void draw(){
   stroke(255,255,255);
   spaceship.Show();
   spaceship.MoveBullets();
-  spaceship.Move();
+  //spaceship.Move();
 }
 void keyPressed(){
   if(key == ' '){
@@ -19,9 +19,11 @@ void keyPressed(){
   }
   if(key == 'a'){
     spaceship.Turn(PI/60);
+    println(spaceship.getFacingAngle());
   }
   if(key == 'd'){
     spaceship.Turn(-PI/60);
+    println(spaceship.getFacingAngle());
   }
 }
 class Floater{
@@ -52,11 +54,18 @@ class Floater{
     return facingAngle;
   }
   public void Show(){
+   stroke(255,255,255);
+   translate(x,y);
    rotate(-facingAngle);
-   for(int i = 0; i < verticies.length-1; i++){
-     line(x + verticies[i].getX(), y + verticies[i].getY(), x + verticies[i+1].getX(), y + verticies[i+1].getY());
+   for(int i = 0; i < verticies.length; i++){
+     if(i < verticies.length-1){
+        line(verticies[i].getX(), verticies[i].getY(), verticies[i+1].getX(), verticies[i+1].getY());
+     } else {
+       line(verticies[i].getX(), verticies[i].getY(), verticies[0].getX(), verticies[0].getY());
+     }
    }
    rotate(facingAngle);
+   translate(-x,-y);
   }
 }
 class Spaceship extends Floater{
@@ -65,7 +74,7 @@ class Spaceship extends Floater{
     super(x,y,a,s,new Point[]{new Point(10,0),new Point(-5,5),new Point(0,0),new Point(-5,-5)});
     bullets = new ArrayList<Bullet>();
   }
-  public void MoveBullets(){a
+  public void MoveBullets(){
     for(int i = 0; i < bullets.size();){
       bullets.get(i).Move();
       bullets.get(i).Show();
@@ -89,7 +98,7 @@ class Spaceship extends Floater{
 class Bullet extends Floater{
   boolean active;
   Bullet(float x, float y, float a, float s){
-    super(x,y,a,s,new Point[]{new Point(0,0), new Point(0,0)});
+    super(x,y,a,s,new Point[]{new Point(0,0), new Point(10,0)});
     active = true;
   }
   /*void Show(){
@@ -97,10 +106,10 @@ class Bullet extends Floater{
     float b = 10*(float)Math.sin(this.getFacingAngle());
     line(this.getX(),this.getY(),this.getX()-a,this.getY() + b);
   }*/
-  void Show(){
-    verticies[1] = new Point(10*(float)Math.cos(facingAngle),10*(float)Math.sin(facingAngle));
-    super.Show();
-  }
+//void Show(){
+    //verticies[1] = new Point(10*(float)Math.cos(facingAngle),10*(float)Math.sin(facingAngle));
+    //super.Show();
+  //}
   void Offscreen(){
     if((this.getX() > 400 || this.getX() < 0) || (this.getY() > 400 || this.getY() < 0)){
       active = false;
