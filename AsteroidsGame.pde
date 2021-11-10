@@ -22,7 +22,7 @@ void draw(){
   if(boosting){
     spaceship.Boost(1);
   } else{
-    
+    spaceship.Move(.2);
   }
   spaceship.Show();
   spaceship.MoveBullets();
@@ -64,7 +64,8 @@ class Floater{
     speedAngle = fA;
     speed = s;
   }
-  public void Move(){
+  public void Move(float s){
+    speed = s;
     x += speed * Math.cos(speedAngle);
     y -= speed * Math.sin(speedAngle);
   }
@@ -103,7 +104,7 @@ class Spaceship extends Floater{
   }
   public void MoveBullets(){
     for(int i = 0; i < bullets.size();){
-      bullets.get(i).Move();
+      bullets.get(i).Move(3);
       bullets.get(i).Show();
       bullets.get(i).Offscreen();
       if(!bullets.get(i).active){
@@ -119,7 +120,7 @@ class Spaceship extends Floater{
   public void Boost(int s){
     speed = s;
     speedAngle = facingAngle;
-    Move();
+    Move(speed);
   }
 }
 class Bullet extends Floater{
