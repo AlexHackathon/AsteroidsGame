@@ -1,11 +1,29 @@
 Spaceship spaceship;
+boolean turnLeft = false;
+boolean turnRight = false;
+boolean boosting = false;
 void setup(){
   spaceship = new Spaceship(200,200,0,.25);
   size(400,400);
 }
 void draw(){
+  //Setup
   background(0,0,0);
   stroke(255,255,255);
+  
+  //Input check
+  if(turnLeft){
+    spaceship.Turn(-PI/60);
+  } else if(turnRight){
+    spaceship.Turn(PI/60);
+  } else {
+    
+  }
+  if(boosting){
+    spaceship.Boost(1);
+  } else{
+    
+  }
   spaceship.Show();
   spaceship.MoveBullets();
   //spaceship.Move();
@@ -15,15 +33,24 @@ void keyPressed(){
     spaceship.Shoot();
   }
   if(key == 'w'){
-    spaceship.Boost();
+    boosting = true;
   }
   if(key == 'a'){
-    spaceship.Turn(PI/60);
-    println(spaceship.getFacingAngle());
+    turnLeft = true;
   }
   if(key == 'd'){
-    spaceship.Turn(-PI/60);
-    println(spaceship.getFacingAngle());
+    turnRight = true;
+  }
+}
+void keyReleased(){
+  if(key == 'w'){
+    boosting = false;
+  }
+  if(key == 'a'){
+    turnLeft = false;
+  }
+  if(key == 'd'){
+    turnRight = false;
   }
 }
 class Floater{
@@ -89,8 +116,8 @@ class Spaceship extends Floater{
   public void Shoot(){
     bullets.add(new Bullet(x,y,facingAngle,4));
   }
-  public void Boost(){
-    speed = 1;
+  public void Boost(int s){
+    speed = s;
     speedAngle = facingAngle;
     Move();
   }
