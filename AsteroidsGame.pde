@@ -1,49 +1,34 @@
+Star[] stars;
 Spaceship spaceship;
 boolean turnLeft = false;
 boolean turnRight = false;
 boolean boosting = false;
 void setup(){
-  spaceship = new Spaceship(200,200,0,.25,PI/60);
+  stars = new Star[200];
+  for(int i = 0; i < stars.length; i++){
+    stars[i] = new Star();
+  }
+  spaceship = new Spaceship(200,200,0,.25,PI/240);
   size(400,400);
 }
 void draw(){
-  //Setup
   background(0,0,0);
   stroke(255,255,255);
-  
-  //Input check
-  //Make sure you don't rotate while moving
+  for(int i = 0; i < stars.length; i++){
+    stars[i].Show();
+  } 
   if(boosting){
-    spaceship.Boost(1);
-    if(turnLeft){
-      spaceship.setDir(1);
-      spaceship.setAngleSpeed(PI/60);
-      spaceship.Turn();
-    } else if(turnRight){
-      spaceship.setDir(-1);
-      spaceship.setAngleSpeed(PI/60);
-      spaceship.Turn();
-    } else {
-      spaceship.setDir(0);
-    }
-  } else{
-    spaceship.Move(.2);
-    if(turnLeft){
-      spaceship.setDir(1);
-      spaceship.setAngleSpeed(PI/60);
-      spaceship.Turn();
-    } else if(turnRight){
-      spaceship.setDir(-1);
-      spaceship.setAngleSpeed(PI/60);
-      spaceship.Turn();
-    } else {
-      spaceship.setAngleSpeed(PI/400);
-      spaceship.Turn();
-    }
+    spaceship.Boost();
+  }
+  if(turnRight){
+    spaceship.setAngleSpeed(-PI/60);
+  } else if(turnLeft){
+    spaceship.setAngleSpeed(PI/60);
   }
   spaceship.Show();
   spaceship.MoveBullets();
-  //spaceship.Move();
+  spaceship.Move();
+  spaceship.Turn();
   if(spaceship.getX() > 400 || spaceship.getY() > 400){
     spaceship.Relocate(400,400);
   } else if(spaceship.getX() < 0 || spaceship.getY() < 0){
@@ -63,6 +48,9 @@ void keyPressed(){
   if(key == 'd'){
     turnRight = true;
   }
+  if(key == 'h'){
+    spaceship.Hyperspace();
+  }
 }
 void keyReleased(){
   if(key == 'w'){
@@ -70,17 +58,17 @@ void keyReleased(){
   }
   if(key == 'a'){
     turnLeft = false;
+    spaceship.setAngleSpeed(spaceship.getAngleSpeed()/4);
   }
   if(key == 'd'){
     turnRight = false;
+    spaceship.setAngleSpeed(spaceship.getAngleSpeed()/4);
   }
 }
 class Floater{
   protected float x,y,facingAngle,speedAngle,speed,angleSpeed;
-  private int dir;
   protected Point[] verticies;
   public Floater(float posX, float posY, float fA,float s, Point[] p, float aS){
-    dir = 0;
     verticies = p;
     x = posX;
     y = posY;
@@ -89,16 +77,13 @@ class Floater{
     speed = s;
     angleSpeed = aS;
   }
-  public void Move(float s){
-    speed = s;
+  public void Move(){
     x += speed * Math.cos(speedAngle);
     y -= speed * Math.sin(speedAngle);
   }
   public void Turn(){
-    facingAngle += angleSpeed * dir;
-  }
-  public int getDir(){
-    return dir;
+    facingAngle += angleSpeed;
+    println(facingAngle);
   }
   public float getX(){
     return x;
@@ -109,11 +94,14 @@ class Floater{
   public float getFacingAngle(){
     return facingAngle;
   }
+  public float getAngleSpeed(){
+    return angleSpeed;
+  }
   public void setAngleSpeed(float a){
     angleSpeed = a;
   }
-  public void setDir(int d){
-    dir = d;
+  public void setSpeed(float s){
+    speed = s;
   }
   public void Show(){
    stroke(255,255,255);
@@ -158,7 +146,7 @@ class Spaceship extends Floater{
   }
   public void MoveBullets(){
     for(int i = 0; i < bullets.size();){
-      bullets.get(i).Move(3);
+      bullets.get(i).Move();
       bullets.get(i).Show();
       bullets.get(i).Offscreen();
       if(!bullets.get(i).active){
@@ -169,12 +157,24 @@ class Spaceship extends Floater{
     }
   }
   public void Shoot(){
-    bullets.add(new Bullet(x,y,facingAngle,4));
+    Bullet b = new Bullet(x,y,facingAngle,4);
+    b.setSpeed(3);
+    bullets.add(b);
+    
   }
-  public void Boost(int s){
-    speed = s;
+  public void Boost(){
+    if(speed < 1f && speed > -1f){
+      speed += 1;
+    }
     speedAngle = facingAngle;
-    Move(speed);
+  }
+  public void Hyperspace(){
+    x = (float)Math.random() * 400;
+    y = (float)Math.random() * 400;
+    facingAngle = (float)Math.random() * 2*PI;
+    angleSpeed = 0;
+    speed = 0;
+    speedAngle = facingAngle;
   }
 }
 class Bullet extends Floater{
@@ -209,5 +209,17 @@ class Point{
   }
   public float getDist(Point p1, Point p2){
     return (float)sqrt((float)Math.pow(p2.getX() - p1.getX(),2) + (float)Math.pow(p2.getY() - p1.getY(),2));
+  }
+}
+class Star{
+  float x,y,size;
+  public Star(){
+    x = (float)Math.random() * 400;
+    y = (float)Math.random() * 400;
+    size = 1 + 3 * (float)(Math.random());
+  }
+  public void Show(){
+    fill(255,255,255);
+    ellipse(x,y,size,size);
   }
 }
