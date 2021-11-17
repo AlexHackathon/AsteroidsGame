@@ -3,12 +3,13 @@ Spaceship spaceship;
 boolean turnLeft = false;
 boolean turnRight = false;
 boolean boosting = false;
+boolean decelerating = false;
 void setup(){
   stars = new Star[200];
   for(int i = 0; i < stars.length; i++){
     stars[i] = new Star();
   }
-  spaceship = new Spaceship(200,200,0,.25,PI/240);
+  spaceship = new Spaceship(200,200);
   size(400,400);
 }
 void draw(){
@@ -18,22 +19,20 @@ void draw(){
     stars[i].Show();
   } 
   if(boosting){
-    spaceship.Boost();
+    spaceship.accelerate(.1);
+  } else if(decelerating){
+    spaceship.accelerate(-.1);
   }
   if(turnRight){
-    spaceship.setAngleSpeed(-PI/60);
+    spaceship.turn(3);
   } else if(turnLeft){
-    spaceship.setAngleSpeed(PI/60);
+    spaceship.turn(-3);
   }
-  spaceship.Show();
-  spaceship.MoveBullets();
-  spaceship.Move();
-  spaceship.Turn();
-  if(spaceship.getX() > 400 || spaceship.getY() > 400){
-    spaceship.Relocate(400,400);
-  } else if(spaceship.getX() < 0 || spaceship.getY() < 0){
-    spaceship.Relocate(400,400);
-  }
+  spaceship.show();
+  //spaceship.MoveBullets();
+  spaceship.move();
+  //spaceship.turn();
+  //spaceship.Relocate(400,400);
 }
 void keyPressed(){
   if(key == ' '){
@@ -41,11 +40,12 @@ void keyPressed(){
   }
   if(key == 'w'){
     boosting = true;
+  } else if(key == 's'){
+    decelerating = true;
   }
   if(key == 'a'){
     turnLeft = true;
-  }
-  if(key == 'd'){
+  } else if(key == 'd'){
     turnRight = true;
   }
   if(key == 'h'){
@@ -55,16 +55,16 @@ void keyPressed(){
 void keyReleased(){
   if(key == 'w'){
     boosting = false;
+  } else if(key == 's'){
+    decelerating = false;
   }
   if(key == 'a'){
     turnLeft = false;
-    spaceship.setAngleSpeed(spaceship.getAngleSpeed()/4);
-  }
-  if(key == 'd'){
+  } else if(key == 'd'){
     turnRight = false;
-    spaceship.setAngleSpeed(spaceship.getAngleSpeed()/4);
   }
 }
+/*
 class Floater{
   protected float x,y,facingAngle,speedAngle,speed,angleSpeed;
   protected Point[] verticies;
@@ -137,8 +137,8 @@ class Floater{
       y = 1;
     }
   }
-}
-class Spaceship extends Floater{
+}*/
+/*class Spaceship extends Floater{
   private ArrayList<Bullet> bullets;
   Spaceship(float x, float y, float a, float s, float aS){
     super(x,y,a,s,new Point[]{new Point(10,0),new Point(-5,5),new Point(0,0),new Point(-5,-5)},aS);
@@ -176,24 +176,7 @@ class Spaceship extends Floater{
     speed = 0;
     speedAngle = facingAngle;
   }
-}
-class Bullet extends Floater{
-  boolean active;
-  Bullet(float x, float y, float a, float s){
-    super(x,y,a,s,new Point[]{new Point(0,0), new Point(10,0)},0);
-    active = true;
-  }
-  void Offscreen(){
-    if((this.getX() > 400 || this.getX() < 0) || (this.getY() > 400 || this.getY() < 0)){
-      active = false;
-    }
-  }
-}
-class Asteroid extends Floater{
-  Asteroid(float x, float y, float a, float s, float aS){
-    super(x,y,a,s,null,aS);
-  }
-}
+}*/
 class Point{
   private float myX;
   private float myY;
@@ -209,17 +192,5 @@ class Point{
   }
   public float getDist(Point p1, Point p2){
     return (float)sqrt((float)Math.pow(p2.getX() - p1.getX(),2) + (float)Math.pow(p2.getY() - p1.getY(),2));
-  }
-}
-class Star{
-  float x,y,size;
-  public Star(){
-    x = (float)Math.random() * 400;
-    y = (float)Math.random() * 400;
-    size = 1 + 3 * (float)(Math.random());
-  }
-  public void Show(){
-    fill(255,255,255);
-    ellipse(x,y,size,size);
   }
 }
