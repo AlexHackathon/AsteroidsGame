@@ -1,3 +1,4 @@
+//To Do: bullets don't work because they get relocated before it realizes that they are off the screen;
 Star[] stars;
 Spaceship spaceship;
 ArrayList<Bullet> bullets;
@@ -7,15 +8,15 @@ boolean boosting = false;
 boolean decelerating = false;
 ArrayList<Asteroid> asteroidList = new ArrayList<Asteroid>();
 void setup(){
+  size(400,400);
   bullets = new ArrayList<Bullet>();
   stars = new Star[200];
   for(int i = 0; i < stars.length; i++){
     stars[i] = new Star();
   }
   spaceship = new Spaceship(200,200);
-  size(400,400);
   for(int i = 0; i < 5; i++){
-      asteroidList.add(new Asteroid(10));
+    asteroidList.add(new Asteroid(10));
   }
 }
 void draw(){
@@ -57,24 +58,42 @@ void draw(){
     if(dist < a.getRadius()){
       asteroidList.remove(i);
       spaceship.die();
-      //asteroidList.get(i).setRadius(asteroidList.get(i).getRadius()/2);
     } else {
        i++;
     }
   }
-  for(int i = 0; i < bullets.size(); i++){
-    bullets.get(i).move();
-    bullets.get(i).show();
-    bullets.get(i).Offscreen();
-  }
-  /*
+  //Move Bullets
   for(int i = 0; i < bullets.size();){
-    if(!bullets.get(i).getActive()){
+    if(bullets.get(i).Offscreen()){
       bullets.remove(i);
+      println("Hi");
     } else {
+      bullets.get(i).move();
+      bullets.get(i).show();
       i++;
     }
-  }*/
+  }
+  //Check if bullets hit asteroids and remove asteroid
+  for(int i = 0; i < asteroidList.size();){
+    for(int j = 0; j < bullets.size();){
+      Asteroid a = asteroidList.get(i);
+      Bullet b = bullets.get(j);
+      float dist = (float)dist((float)a.getX(), (float)a.getY(), (float)b.getX(), (float)b.getY());
+      if(dist < a.getRadius()){
+        asteroidList.remove(i);
+        bullets.remove(j);
+        if(asteroidList.size() == 0 || bullets.size() == 0){
+          break;
+        }
+      } else {
+         j++;
+      }
+    }
+    if(asteroidList.size() == 0 || bullets.size() == 0){
+          break;
+    }
+    i++;
+  }
 }
 void keyPressed(){
   if(key == ' '){
