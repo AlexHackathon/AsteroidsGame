@@ -1,5 +1,4 @@
 class Spaceship extends Floater{
-  private ArrayList<Bullet> bullets;
   private boolean dead;
   public Spaceship(float x, float y){
     corners = 4;
@@ -31,5 +30,8 @@ class Spaceship extends Floater{
   }
   public void die(){
     dead = true;
+  }
+  public double getPointDirection(){
+    return myPointDirection;
   }
 }
