@@ -21,6 +21,11 @@ class Bullet extends Floater{
     }
     return false;
   }
+  public void move(){
+    //change the x and y coordinates by myXspeed and myYspeed       
+    myCenterX += myXspeed;    
+    myCenterY += myYspeed; 
+  }
   public void show(){
     line((float)myCenterX,(float)myCenterY, (float)myCenterX + 10*(float)Math.cos(myPointDirection*(Math.PI/180)),(float)myCenterY + 10*(float)Math.sin(myPointDirection*(Math.PI/180)));
   }
