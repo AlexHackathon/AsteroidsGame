@@ -7,6 +7,9 @@ boolean turnRight = false;
 boolean boosting = false;
 boolean decelerating = false;
 ArrayList<Asteroid> asteroidList = new ArrayList<Asteroid>();
+int bigAsteroid = 20;
+int smallAsteroid = 10;
+int smallestAsteroid = 5;
 void setup(){
   size(400,400);
   bullets = new ArrayList<Bullet>();
@@ -15,8 +18,8 @@ void setup(){
     stars[i] = new Star();
   }
   spaceship = new Spaceship(200,200);
-  for(int i = 0; i < 5; i++){
-    asteroidList.add(new Asteroid(10));
+  for(int i = 0; i < 1; i++){
+    asteroidList.add(new Asteroid(bigAsteroid));
   }
 }
 void draw(){
@@ -33,6 +36,14 @@ void draw(){
     text("Game Over",200,200);
     return;
   }
+  if(asteroidList.size() == 0){
+    fill(255,255,255);
+    spaceship.show();
+    textAlign(CENTER);
+    textSize(50);
+    text("You Win!!!",200,200);
+    return;
+  }
   //Dp things based on inputs
   if(boosting){
     spaceship.accelerate(.1);
@@ -46,6 +57,7 @@ void draw(){
   }
   spaceship.show();
   spaceship.move();
+  spaceship.setCurrFrames(spaceship.getCurrFrames() + 1);
   //Move and show asteroids
   for(Asteroid a : asteroidList){
     a.move();
@@ -56,8 +68,18 @@ void draw(){
     Asteroid a = asteroidList.get(i);
     float dist = (float)dist((float)a.getX(), (float)a.getY(), (float)spaceship.getX(), (float)spaceship.getY());
     if(dist < a.getRadius()){
+      if(a.getRadius() == bigAsteroid * 2){
+          spaceship.die();
+          //asteroidList.add(new Asteroid(smallAsteroid, a.getX(), a.getY()));
+          //asteroidList.add(new Asteroid(smallAsteroid, a.getX(), a.getY()));
+        } else if(a.getRadius() == smallAsteroid * 2){
+          asteroidList.add(new Asteroid(smallestAsteroid, a.getX(), a.getY()));
+          asteroidList.add(new Asteroid(smallestAsteroid, a.getX(), a.getY()));
+        } else if(a.getRadius() == smallestAsteroid * 2){
+          
+        }
       asteroidList.remove(i);
-      spaceship.die();
+      //spaceship.die();
     } else {
        i++;
     }
@@ -66,7 +88,6 @@ void draw(){
   for(int i = 0; i < bullets.size();){
     if(bullets.get(i).Offscreen()){
       bullets.remove(i);
-      println("Hi");
     } else {
       bullets.get(i).move();
       bullets.get(i).show();
@@ -80,6 +101,15 @@ void draw(){
       Bullet b = bullets.get(j);
       float dist = (float)dist((float)a.getX(), (float)a.getY(), (float)b.getX(), (float)b.getY());
       if(dist < a.getRadius()){
+        println("Destroy");
+        println(a.getRadius());
+        if(a.getRadius() == bigAsteroid * 2){
+          asteroidList.add(new Asteroid(smallAsteroid, a.getX(), a.getY()));
+          asteroidList.add(new Asteroid(smallAsteroid, a.getX(), a.getY()));
+        } else if(a.getRadius() == smallAsteroid * 2){
+          asteroidList.add(new Asteroid(smallestAsteroid, a.getX(), a.getY()));
+          asteroidList.add(new Asteroid(smallestAsteroid, a.getX(), a.getY()));
+        }
         asteroidList.remove(i);
         bullets.remove(j);
         if(asteroidList.size() == 0 || bullets.size() == 0){
@@ -97,7 +127,10 @@ void draw(){
 }
 void keyPressed(){
   if(key == ' '){
-    bullets.add(new Bullet(spaceship));
+    if(spaceship.canShoot()){
+      spaceship.setCurrFrames(0);
+      bullets.add(new Bullet(spaceship));
+    }
   }
   if(key == 'w'){
     boosting = true;
