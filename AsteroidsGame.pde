@@ -1,4 +1,3 @@
-//To Do: bullets don't work because they get relocated before it realizes that they are off the screen;
 Star[] stars;
 Spaceship spaceship;
 ArrayList<Bullet> bullets;
@@ -12,7 +11,9 @@ int smallAsteroid = 10;
 int smallestAsteroid = 5;
 
 int level;
+boolean inbetweenLevels;
 void setup(){
+  inbetweenLevels = false;
   level = 1;
   size(400,400);
   bullets = new ArrayList<Bullet>();
@@ -23,6 +24,12 @@ void setup(){
   spaceship = new Spaceship(200,200);
   for(int i = 0; i < level; i++){
     asteroidList.add(new Asteroid(bigAsteroid));
+  }
+}
+void mouseClicked(){
+  if(inbetweenLevels){
+    inbetweenLevels = false;
+    resetGame();
   }
 }
 void draw(){
@@ -44,7 +51,8 @@ void draw(){
     spaceship.show();
     textAlign(CENTER);
     textSize(50);
-    text("You Win!!!",200,200);
+    text("Level " + (level + 1),200,200);
+    inbetweenLevels = true;
     return;
   }
   //Dp things based on inputs
@@ -165,4 +173,16 @@ void keyReleased(){
 }
 private float distBetween(float x1, float y1, float x2, float y2){
   return (float)Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1-y2,2));
+}
+void resetGame(){
+  level += 1;
+  bullets = new ArrayList<Bullet>();
+  stars = new Star[200];
+  for(int i = 0; i < stars.length; i++){
+    stars[i] = new Star();
+  }
+  spaceship = new Spaceship(200,200);
+  for(int i = 0; i < level; i++){
+    asteroidList.add(new Asteroid(bigAsteroid));
+  }
 }
