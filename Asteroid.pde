@@ -4,6 +4,7 @@ class Asteroid extends Floater{
   public Asteroid(int halfRadius){
     corners = 8;
     radius = 2 * halfRadius;
+    rotSpeed = 1 + Math.random() * 4;
     xCorners = new int[corners];
     yCorners = new int[corners];
     xCorners[0] = halfRadius + (int)(Math.random() * halfRadius);
@@ -32,6 +33,7 @@ class Asteroid extends Floater{
   public Asteroid(int halfRadius, double xPos, double yPos){
     corners = 8;
     radius = 2 * halfRadius;
+    rotSpeed = 1 + Math.random() * 4;
     xCorners = new int[corners];
     yCorners = new int[corners];
     xCorners[0] = halfRadius + (int)(Math.random() * halfRadius);
