@@ -4,7 +4,7 @@ class Spaceship extends Floater{
   private int currFrames;
   private int health;
   public Spaceship(float x, float y){
-    health = 3;
+    health = 5;
     corners = 4;
     framesBetweenShoot = 20;
     xCorners = new int[]{10,-5,0,-5};
@@ -51,10 +51,28 @@ class Spaceship extends Floater{
   public int getCurrFrames(){
     return currFrames;
   }
-  private void decreaseHealth(int decrease){
+  public void decreaseHealth(int decrease){
     health -= decrease;
   }
-  private int getHealth(){
+  public int getHealth(){
     return health;
+  }
+  public void drawHealth(){
+    for(int i = 0; i < health; i++){
+      drawHeart(30 + i * 30, 30, 2);
+    }
+  }
+  private void drawHeart(int x, int y, int baseUnit){
+    fill(255,0,0);
+    beginShape();
+    vertex(x,y);
+    vertex(x + 2 * baseUnit, y - 2 * baseUnit);
+    vertex(x + 4 * baseUnit, y - 2 * baseUnit);
+    vertex(x + 5 * baseUnit, y);
+    vertex(x, y + 5 * baseUnit);
+    vertex(x - 5 * baseUnit,y);
+    vertex(x - 4 * baseUnit, y - 2 * baseUnit);
+    vertex(x - 2 * baseUnit, y - 2 * baseUnit);
+    endShape(CLOSE);
   }
 }
