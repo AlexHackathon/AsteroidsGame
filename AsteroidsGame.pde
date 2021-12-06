@@ -10,7 +10,10 @@ ArrayList<Asteroid> asteroidList = new ArrayList<Asteroid>();
 int bigAsteroid = 20;
 int smallAsteroid = 10;
 int smallestAsteroid = 5;
+
+int level;
 void setup(){
+  level = 1;
   size(400,400);
   bullets = new ArrayList<Bullet>();
   stars = new Star[200];
@@ -18,7 +21,7 @@ void setup(){
     stars[i] = new Star();
   }
   spaceship = new Spaceship(200,200);
-  for(int i = 0; i < 1; i++){
+  for(int i = 0; i < level; i++){
     asteroidList.add(new Asteroid(bigAsteroid));
   }
 }
@@ -58,6 +61,7 @@ void draw(){
   spaceship.show();
   spaceship.move();
   spaceship.setCurrFrames(spaceship.getCurrFrames() + 1);
+  spaceship.drawHealth();
   //Move and show asteroids
   for(Asteroid a : asteroidList){
     a.move();
@@ -66,20 +70,21 @@ void draw(){
   //Remove asteroids when hit by spaceship
   for(int i = 0; i < asteroidList.size();){
     Asteroid a = asteroidList.get(i);
-    float dist = (float)dist((float)a.getX(), (float)a.getY(), (float)spaceship.getX(), (float)spaceship.getY());
+    float dist = distBetween((float)a.getX(), (float)a.getY(), (float)spaceship.getX(), (float)spaceship.getY());
     if(dist < a.getRadius()){
       if(a.getRadius() == bigAsteroid * 2){
-          spaceship.die();
-          //asteroidList.add(new Asteroid(smallAsteroid, a.getX(), a.getY()));
-          //asteroidList.add(new Asteroid(smallAsteroid, a.getX(), a.getY()));
+          spaceship.decreaseHealth(5);
         } else if(a.getRadius() == smallAsteroid * 2){
           asteroidList.add(new Asteroid(smallestAsteroid, a.getX(), a.getY()));
           asteroidList.add(new Asteroid(smallestAsteroid, a.getX(), a.getY()));
+          spaceship.decreaseHealth(2);
         } else if(a.getRadius() == smallestAsteroid * 2){
-          
+          spaceship.decreaseHealth(1);
         }
+      if(spaceship.getHealth() <= 0){
+        spaceship.die();
+      }
       asteroidList.remove(i);
-      //spaceship.die();
     } else {
        i++;
     }
@@ -99,7 +104,7 @@ void draw(){
     for(int j = 0; j < bullets.size();){
       Asteroid a = asteroidList.get(i);
       Bullet b = bullets.get(j);
-      float dist = (float)dist((float)a.getX(), (float)a.getY(), (float)b.getX(), (float)b.getY());
+      float dist = distBetween((float)a.getX(), (float)a.getY(), (float)b.getX(), (float)b.getY());
       if(dist < a.getRadius()){
         println("Destroy");
         println(a.getRadius());
@@ -157,4 +162,7 @@ void keyReleased(){
   } else if(key == 'd'){
     turnRight = false;
   }
+}
+private float distBetween(float x1, float y1, float x2, float y2){
+  return (float)Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1-y2,2));
 }
