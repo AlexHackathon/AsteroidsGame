@@ -119,8 +119,6 @@ void draw(){
       Bullet b = bullets.get(j);
       float dist = distBetween((float)a.getX(), (float)a.getY(), (float)b.getX(), (float)b.getY());
       if(dist < a.getRadius()){
-        println("Destroy");
-        println(a.getRadius());
         if(a.getRadius() == bigAsteroid * 2){
           asteroidList.add(new Asteroid(smallAsteroid, a.getX(), a.getY()));
           asteroidList.add(new Asteroid(smallAsteroid, a.getX(), a.getY()));
