@@ -31,6 +31,10 @@ void mouseClicked(){
     inbetweenLevels = false;
     resetGame();
   }
+  if(spaceship.getDead()){
+    level = 0;
+    resetGame();
+  }
 }
 void draw(){
   background(0,0,0);
@@ -43,6 +47,7 @@ void draw(){
   if(spaceship.getDead()){
     fill(255,255,255);
     textAlign(CENTER);
+    textSize(50);
     text("Game Over",200,200);
     return;
   }
