@@ -185,6 +185,7 @@ void resetGame(){
     stars[i] = new Star();
   }
   spaceship = new Spaceship(200,200);
+  asteroidList = new ArrayList<Asteroid>();
   for(int i = 0; i < level; i++){
     asteroidList.add(new Asteroid(bigAsteroid));
   }
