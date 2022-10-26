@@ -28,11 +28,12 @@ void setup(){
 }
 void mouseClicked(){
   if(inbetweenLevels){
+    level += 1
     inbetweenLevels = false;
-    resetGame();
+    resetGame(level);
   }
   if(spaceship.getDead()){
-    level = 0;
+    level = 1;
     resetGame();
   }
 }
@@ -56,7 +57,7 @@ void draw(){
     spaceship.show();
     textAlign(CENTER);
     textSize(50);
-    text("Level " + (level + 1),200,200);
+    text("Level " + (level),200,200);
     inbetweenLevels = true;
     return;
   }
@@ -177,8 +178,8 @@ void keyReleased(){
 private float distBetween(float x1, float y1, float x2, float y2){
   return (float)Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1-y2,2));
 }
-void resetGame(){
-  level = 1;
+void resetGame(int l){
+  level = l;
   bullets = new ArrayList<Bullet>();
   stars = new Star[200];
   for(int i = 0; i < stars.length; i++){
